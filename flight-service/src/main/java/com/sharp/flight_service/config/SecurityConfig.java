@@ -32,6 +32,8 @@ public class SecurityConfig {
         .requestMatchers(HttpMethod.PUT, "/api/**").hasRole("ADMIN")
         .requestMatchers(HttpMethod.PATCH, "/api/**").hasRole("ADMIN")
         .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
+        .requestMatchers("/ws/*.wsdl").permitAll()
+        .requestMatchers("/ws/**").authenticated()
 
         .anyRequest().authenticated()
       )
