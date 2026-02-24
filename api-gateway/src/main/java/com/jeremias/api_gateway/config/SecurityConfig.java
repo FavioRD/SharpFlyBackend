@@ -15,11 +15,13 @@ public class SecurityConfig {
   public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
     return http
       .csrf(ServerHttpSecurity.CsrfSpec::disable)
+      .cors().and() // deja que Spring aplique CORS (y que Gateway meta headers)
       .authorizeExchange(ex -> ex
+        .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ✅ Preflight sin JWT
         .pathMatchers("/auth/**").permitAll()
         .anyExchange().authenticated()
       )
-      .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}))
+      .oauth2ResourceServer(oauth2 -> oauth2.jwt())
       .build();
   }
 }

@@ -4,22 +4,63 @@ server:
 spring:
   application:
     name: api-gateway
+
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  cloud:
+    gateway:
+      # Si ya manejás CORS por código (CorsWebFilter), borrá este bloque.
+      # Si vas a usar YAML, te conviene eliminar el CorsWebFilter en Java.
+      globalcors:
+        corsConfigurations:
+          "[/**]":
+            allowedOrigins: "*"
+            allowedMethods: [GET, POST, PUT, DELETE, PATCH, OPTIONS]
+            allowedHeaders: "*"
+            exposedHeaders: [Authorization]
+            allowCredentials: false
+
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+      routes:
+        # Auth Service - Authentication endpoints
+        - id: auth-service
+          uri: http://localhost:8990
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=0
+
+        # Auth Service - User management
+        - id: auth-service-users
+          uri: http://localhost:8990
+          predicates:
+            - Path=/api/v1/users/**
+          filters:
+            - StripPrefix=0
+
+        # Flight Service - All flight endpoints
+        - id: flight-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/v1/airports/**,/api/v1/aircraft/**,/api/v1/routes/**,/api/v1/flight-templates/**,/api/v1/flight-instances/**
+          filters:
+            - StripPrefix=0
+
+        # Booking Service - All booking endpoints
+        - id: booking-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/v1/bookings/**,/api/v1/passengers/**
+          filters:
+            - StripPrefix=0
 
 security:
   jwt:
     secret: ${SECURITY_JWT_SECRET:NDI0MjQyNDI0MjQyNDI0MjQyNDI0MjQyNDI0MjQyNDI0MjQyNDI0MjQyNDI0Mg==}
 
-  # Configuración para CORS
-  cloud:
-    gateway:
-      default-filters:
-        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
-
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: "*"
-            allowedMethods: [GET, POST, PUT, DELETE, PATCH, OPTIONS]
-            allowedHeaders: "*"
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
