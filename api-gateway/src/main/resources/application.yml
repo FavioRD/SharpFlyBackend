@@ -45,7 +45,7 @@ spring:
         - id: flight-service
           uri: http://localhost:8082
           predicates:
-            - Path=/api/v1/airports/**,/api/v1/aircraft/**,/api/v1/routes/**,/api/v1/flight-templates/**,/api/v1/flight-instances/**
+            - Path=/api/v1/airports/**,/api/v1/aircraft/**,/api/v1/routes/**,/api/v1/flight-templates/**,/api/v1/flight-instances/**,/ws/**
           filters:
             - StripPrefix=0
 

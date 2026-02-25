@@ -19,6 +19,8 @@ public class SecurityConfig {
       .authorizeExchange(ex -> ex
         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll() // ✅ Preflight sin JWT
         .pathMatchers("/auth/**").permitAll()
+        .pathMatchers("/ws/*.wsdl").permitAll()
+        .pathMatchers("/ws/**").authenticated()
         .anyExchange().authenticated()
       )
       .oauth2ResourceServer(oauth2 -> oauth2.jwt())

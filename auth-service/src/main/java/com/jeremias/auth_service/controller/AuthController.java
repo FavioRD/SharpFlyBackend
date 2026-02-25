@@ -26,10 +26,17 @@ public class AuthController {
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
 
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
-
+    	try {
+            authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    request.getUsername(),
+                    request.getPassword()
+                )
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
         UserDetails ud = userDetailsService.loadUserByUsername(request.getUsername());
         User user = (User) ud;
 

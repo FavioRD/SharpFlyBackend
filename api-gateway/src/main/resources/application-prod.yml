@@ -14,7 +14,7 @@ spring:
               - "https://tu-frontend.com"
               - "https://www.tu-frontend.com"
 							- "http://localhost:4200"
-            allowedMethods: [GET, POST, PUT, DELETE, PATCH, OPTIONS]
+							allowedMethods: [GET, POST, PUT, DELETE, PATCH, OPTIONS]
             allowedHeaders: "*"
             exposedHeaders: [Authorization]
             allowCredentials: false
